@@ -32,6 +32,7 @@ def getClip6digit():
     finally:
         user32.CloseClipboard()
 
+from banned_domains import banned_domains
 def getMail():
     user32.OpenClipboard(0)
     try:
@@ -41,10 +42,10 @@ def getMail():
             text = ctypes.c_char_p(data_locked)
             value = text.value
             kernel32.GlobalUnlock(data_locked)
-            if "@dropmail.me" in str(value)  or "@10mail.org"  in str(value)  or "@emlpro.com" in str(value) or "@emltmp.com" in str(value): # 
-                match = re.search(r'[\w.+-]+@[\w-]+\.[\w.-]+', str(value))
-                return str(match.group(0))
-            return False
+            res = str(re.search(r'[\w.+-]+@[\w-]+\.[\w.-]+', str(value)).group(0))
+            if res.endswith(banned_domains):
+                return False
+            return res
     finally:
         user32.CloseClipboard()
 webbrowser.open('https://google.com')
@@ -99,7 +100,7 @@ def randomize(
 
 # Username
 _username_=randomize('-s',5)+randomize('-s',5)+randomize('-s',5)
-pyautogui.typewrite(_username_ + '\t\t')
+pyautogui.typewrite(_username_ + '\t\t\t')
 print("Username:" + _username_)
 
 # Password
@@ -108,6 +109,9 @@ pyautogui.typewrite(_password_+'\t'+_password_+'\t')
 print("Password:" + _password_)
 
 pyautogui.typewrite('\n')
+time.sleep(5)
+pyautogui.typewrite('\t\t\n')
+
 time.sleep(5)
 pyautogui.typewrite('\t\t\t\n')
 
